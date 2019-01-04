@@ -406,15 +406,66 @@ def ionic_naming():
 
 
 def covalent():
-    problemkey = str(input('Is the problem either covalent [N]aming or writing the [F]ormulas?')).upper()
+    problemkey = str(input('Is the problem either covalent [N]aming or writing the [F]ormulas? \n')).upper()
     if problemkey == 'N':
-        covalent_naming()
+        print(covalent_naming())
     if problemkey == 'F':
-        covalent_compound()
+        print(covalent_compound())
 
 def covalent_naming():
+    chemical_name = str(input('What is the name of the covalent compound? \n'))
+    first_element = chemical_name.split()[0].lower()
+    second_element = chemical_name.split()[1].lower()
+    try:
+        first_element_occurrences = int([(x) for x in range(len(prefixes)) if prefixes[x] in first_element][0])
+        second_element_occurrences = int([(x) for x in range(len(prefixes)) if prefixes[x] in second_element][0])
+    except:
+        first_element_occurrences = 0
+        second_element_occurrences = int([(x) for x in range(len(prefixes)) if prefixes[x] in second_element][0])
+    first_prefix = prefixes[first_element_occurrences]
+    second_prefix = prefixes[second_element_occurrences]
+    first_element_name = first_element.replace(first_prefix, '').capitalize()
+    second_element_name = second_element.replace(second_prefix, '')[:-3]
+    first_element_symbol = Element_names.get(first_element_name, '')
+    second_element_symbol = Element_names.get(second_element_name, '')
+    if first_element_occurrences == 0:
+        if second_element_occurrences == 0:
+            compound = str(first_element_symbol) + str(second_element_symbol)
+        else:
+            compound = str(first_element_symbol) + str(second_element_symbol) + str(second_element_occurrences + 1)
+    else:
+        if second_element_occurrences == 0:
+            compound = str(first_element_symbol) + str(first_element_occurrences + 1) + str(second_element_symbol)
+        else:
+            compound = str(first_element_symbol) + str(first_element_occurrences + 1) + str(second_element_symbol) \
+                       + str(second_element_occurrences + 1)
+    return compound.replace('0','\u2080').replace('1','\u2081').replace('2','\u2082').replace('3','\u2083').replace('4','\u2084').replace('5','\u2085').replace('6','\u2086').replace('7','\u2087').replace('8','\u2088').replace('9','\u2089')
+
 
 def covalent_compound():
+    compound = str(input('What is the name of the compound? \n'))
+    chemicals = re.sub(r"[^A-Za-z]+", '', compound)
+    split_compound = re.findall('[A-Z][^A-Z]*', chemicals)
+    first_element = split_compound[0]
+    second_element = split_compound[1]
+    first_element_name = Element.get(first_element, '')[1]
+    second_element_name = Element.get(second_element, '')[1].lower()
+    different_elements = re.findall('[A-Z][^A-Z]*', compound)
+    subscripts_array = ['', '']
+    for i in range(0, 2):
+        subscripts_array[i] = re.sub("\D", "", different_elements[i])
+        if subscripts_array[i] == '':
+            subscripts_array[i] = 1
+        else:
+            subscripts_array[i] = int(subscripts_array[i])
+    first_element_subscript = prefixes[int(subscripts_array[0])-1]
+    second_element_subscript = prefixes[int(subscripts_array[1])-1]
+    if(subscripts_array[0] == 1):
+        compound_name = first_element_name + ' ' + second_element_subscript + second_element_name
+    else:
+        compound_name = first_element_subscript.capitalize() + (first_element_name.lower()) + ' ' + second_element_subscript + second_element_name
+    return compound_name
+covalent()
 '''
 def main():
     print("Booted up")
