@@ -1,8 +1,9 @@
 import roman
 import re
-#It goes:Atomic Symbol: Atomic Number, Element Name, Root, Atomic Weight, Column, Row, Multivalence, *Ionic Charges]
+# It goes:Atomic Symbol: Atomic Number, Element Name, Root, Atomic Weight, Column, Row, Multivalence, *Ionic Charges]
 
-Element={'H': [1, 'Hydrogen', 'hydr', 1, 1, 1, False, 1],
+Element = {
+         'H': [1, 'Hydrogen', 'hydr', 1, 1, 1, False, 1],
          'He': [2, 'Helium', 'hel', 4, 8, 1, False, 0],
          'Li': [3, 'Lithium', True, 7, 1, 2, False, 1],
          'Be': [4, 'Beryllium', True, 9, 2, 2, False, 2],
@@ -95,7 +96,7 @@ Element={'H': [1, 'Hydrogen', 'hydr', 1, 1, 1, False, 1],
          'Pa': [91, 'Protactinium', True, 231, 7, 9, True, [5, 4]],
          'U': [92, 'Uranium', True, 238, 7, 9, True, [6, 4, 5]]}
 
-Element_names={
+Element_names = {
     'Hydrogen':  'H',
     'hel':  'He',
     'Lithium':  'Li',
@@ -190,27 +191,50 @@ Element_names={
     'Uranium':  'U'
 }
 
-polyatomic_ions={
-    'Ammonium':['NH\u2084',1],
-    'hydroxide':['OH',-1],
-    'nitrite':['NO\u2082',-1],
-    'nitrate':['NO\u2083',-1],
-    'chlorate':['ClO\u2083',-1],
-    'cyanide':['CN',-1],
-    'carbonate':['CO\u2083',-2],
-    'sulfite':['SO\u2083',-2],
-    'sulfate':['SO\u2084',-2],
-    'bisulfate':['HSO\u2084',-1],
-    'phosphate':['PO\u2084',-3],
-    'bicarbonate':['HCO\u2083',-1],
-    'perchlorate':['ClO\u2084',-1],
-    'chlorate':['ClO\u2083',-1],
-    'chlorite':['ClO\u2082',-1],
-    'hypochlorite':['ClO',-1],
-    'acetate':['C\u2082H\u2083O\u2082',-1],
-    'dichromate':['Cr\u2082O\u2087',-2],
-    'chromate':['CrO\u2084',-1]
+polyatomic_ions = {
+    'Ammonium': ['NH4', 1],
+    'hydroxide': ['OH', -1],
+    'nitrite': ['NO2', -1],
+    'nitrate': ['NO3', -1],
+    'chlorate': ['ClO3', -1],
+    'cyanide': ['CN', -1],
+    'carbonate': ['CO3', -2],
+    'sulfite': ['SO3', -2],
+    'sulfate': ['SO4', -2],
+    'bisulfate': ['HSO4', -1],
+    'phosphate': ['PO4', -3],
+    'bicarbonate': ['HCO3', -1],
+    'perchlorate': ['ClO4', -1],
+    'chlorate': ['ClO3', -1],
+    'chlorite': ['ClO2', -1],
+    'hypochlorite': ['ClO', -1],
+    'acetate': ['C2H3O2', -1],
+    'dichromate': ['Cr2O7', -2],
+    'chromate': ['CrO4', -1]
 }
+
+polyatomic_formula = {
+    "NH4": "Ammonium",
+    "OH": "hydroxide",
+    "NO2": "nitrite",
+    "NO3": "nitrate",
+    "ClO3": "chlorate",
+    "CN": "cyanide",
+    "CO3": "carbonate",
+    "SO3": "sulfite",
+    "SO4": "sulfate",
+    "HSO4": "bisulfate",
+    "PO4": "phosphate",
+    "HCO3": "bicarbonate",
+    "ClO4": "perchlorate",
+    "ClO2": "chlorite",
+    "ClO": "hypochlorite",
+    "C2H3O2": "acetate",
+    "Cr2O7": "dichromate",
+    "CrO4": "chromate"
+}
+
+prefixes = ['mono','di','tri','tetra','penta','hexa','hepta','octa']
 
 def lcm(x, y):
     if x > y:
@@ -231,6 +255,7 @@ def lcm(x, y):
         return(int(lcm/x),'')
     return(int(lcm/x),int(lcm/y))
 
+
 def ionic():
     ionic_choice = str(input('Is it F: Finding a compound from its name or N: Naming a compound \n').upper())
     if (ionic_choice=='F'):
@@ -239,6 +264,7 @@ def ionic():
     if (ionic_choice=='N'):
         print(ionic_naming())
         return
+
 
 def ionic_compound():
     compound_name=str(input('What is the name of the compound without any roman numerals?\n'))
@@ -250,61 +276,61 @@ def ionic_compound():
     try:
         ammonium_anion=polyatomic_ions.get(anion,'')
         polyatomic_cation=polyatomic_ions.get(cation_ide,'')
-        if(ammonium_anion or polyatomic_cation):
+        if ammonium_anion or polyatomic_cation :
             polyatomic=True
-        if(ammonium_anion):
+        if ammonium_anion:
             anion_symbol=polyatomic_ions.get(anion,'')[0]
             anion_multivalence=False
-            if(not polyatomic_cation):
+            if not polyatomic_cation:
                 cation_symbol=Element_names.get(cation,'')
-        if(polyatomic_cation):
-            if(not ammonium_anion):
+        if polyatomic_cation:
+            if not ammonium_anion:
                 anion_symbol=Element_names.get(anion,'')
                 anion_multivalence=Element.get(anion_symbol,'')
                 anion_multivalence=anion_multivalence[6]
             cation_symbol=polyatomic_ions.get(cation_ide,'')[0]
     except:
-        if(not polyatomic):
+        if not polyatomic:
             anion_symbol=Element_names.get(anion,'')
             cation_symbol=Element_names.get(cation,'')
             anion_multivalence=Element.get(anion_symbol,'')
             anion_multivalence=anion_multivalence[6]
-    if(anion_multivalence):
+    if anion_multivalence:
         roman_numerals=str(input('What is the roman numeral attached to the anion? \n'))
         anion_charge=roman.fromRoman(roman_numerals)
-        if(polyatomic):
+        if polyatomic:
             cation_charge=abs(polyatomic_ions.get(cation_symbol,'')[0])
         else:
             cation_charge=abs(Element.get(cation_symbol,'')[7])
         atoms_needed=lcm(anion_charge,cation_charge)
         atoms_needed=[str(atoms_needed[0]),str(atoms_needed[1])]
-        if(polyatomic):
+        if polyatomic:
             chemical_fomrula=str(anion_symbol)+atoms_needed[0]+'('+str(cation_symbol)+')'+atoms_needed[1]
         else:
             chemical_formula=str(anion_symbol)+atoms_needed[0]+str(cation_symbol)+atoms_needed[1]
         #Changing Subscripts Format
-        return(chemical_formula.replace('0','\u2080').replace('1','\u2081').replace('2','\u2082').replace('3','\u2083').replace('4','\u2084').replace('5','\u2085').replace('6','\u2086').replace('7','\u2087').replace('8','\u2088').replace('9','\u2089'))
+        return chemical_formula.replace('0','\u2080').replace('1','\u2081').replace('2','\u2082').replace('3','\u2083').replace('4','\u2084').replace('5','\u2085').replace('6','\u2086').replace('7','\u2087').replace('8','\u2088').replace('9','\u2089')
     else:
-        if(polyatomic):
-            if(ammonium_anion):
+        if polyatomic :
+            if ammonium_anion:
                 anion_charge=1
             else:
                 anion_charge=abs(Element.get(anion_symbol,'')[7])
-            if(polyatomic_cation):
+            if polyatomic_cation:
                 cation_charge=abs(polyatomic_ions.get(cation_ide,'')[1])
             else:
                 cation_charge=abs(Element.get(cation_symbol,'')[7])
             atoms_needed=lcm(anion_charge,cation_charge)
             atoms_needed=[str(atoms_needed[0]),str(atoms_needed[1])]
-            if(ammonium_anion):
-                if(polyatomic_cation):
+            if ammonium_anion:
+                if polyatomic_cation:
                     chemical_formula='('+str(anion_symbol)+')'+atoms_needed[0]+'('+str(cation_symbol)+')'+atoms_needed[1]
                 else:
                     chemical_formula='('+str(anion_symbol)+')'+atoms_needed[0]+str(cation_symbol)+atoms_needed[1]
             else:
                 chemical_formula=str(anion_symbol)+atoms_needed[0]+'('+str(cation_symbol)+')'+atoms_needed[1]
             #Changing Subscripts Format
-            return(chemical_formula.replace('0','\u2080').replace('1','\u2081').replace('2','\u2082').replace('3','\u2083').replace('4','\u2084').replace('5','\u2085').replace('6','\u2086').replace('7','\u2087').replace('8','\u2088').replace('9','\u2089'))
+            return chemical_formula.replace('0','\u2080').replace('1','\u2081').replace('2','\u2082').replace('3','\u2083').replace('4','\u2084').replace('5','\u2085').replace('6','\u2086').replace('7','\u2087').replace('8','\u2088').replace('9','\u2089')
         else:
             anion_charge=abs(Element.get(anion_symbol,'')[7])
             cation_charge=abs(Element.get(cation_symbol,'')[7])
@@ -312,41 +338,94 @@ def ionic_compound():
             atoms_needed=[str(atoms_needed[0]),str(atoms_needed[1])]
             chemical_formula=str(anion_symbol)+atoms_needed[0]+str(cation_symbol)+atoms_needed[1]
             #Changing Subscripts Format
-            return(chemical_formula.replace('0','\u2080').replace('1','\u2081').replace('2','\u2082').replace('3','\u2083').replace('4','\u2084').replace('5','\u2085').replace('6','\u2086').replace('7','\u2087').replace('8','\u2088').replace('9','\u2089'))
+            return chemical_formula.replace('0','\u2080').replace('1','\u2081').replace('2','\u2082').replace('3','\u2083').replace('4','\u2084').replace('5','\u2085').replace('6','\u2086').replace('7','\u2087').replace('8','\u2088').replace('9','\u2089')
+
 
 def ionic_naming():
     polyatomic=False
-    compound=str(input('What is the chemical formula for the compound (with brackets around polyatomic ions and for subscripts just place the number'))
-    if('(' in compound):
+    compound=str(input('What is the chemical formula for the compound ('
+                       'with brackets around polyatomic ions and for subscripts just place the number) \n'))
+    if '(' in compound:
         polyatomic=True
-    if(not polyatomic):
-        split_compound = re.findall('[A-Z][^A-Z]*', compound)
-        no_subscript_compound=[]
-        no_chemical_compound=[]
-        no_subscript_compound[0] = filter(lambda x: x.isalpha(), split_compound[0])
-        no_subscript_compound[1] = filter(lambda x: x.isalpha(), split_compound[1])
-        no_chemical_compound[0] = filter(lambda x: x.isdigit(), split_compound[0])
-        no_chemical_compound[1] = filter(lambda x: x.isdigit(), split_compound[1])
-        cation=Element.get(no_subscript_compound[1],'')[2]
-        cation_ide=cation+'ide'
-        print(cation_ide)
-        return('oranges')
+    if not polyatomic:
+        chemicals = re.sub(r"[^A-Za-z]+", '', compound)
+        split_compound = re.findall('[A-Z][^A-Z]*', chemicals)
+        cation = Element.get(split_compound[1], '')
+        anion_multivalence = Element.get(split_compound[0], '')[6]
+        cation = cation[2]
+        cation_ide = cation + 'ide'
+        anion = Element.get(split_compound[0], '')[1]
+        if not anion_multivalence:
+            compound_name = anion + ' ' + cation_ide
+            return compound_name
+        else:
+            different_elements = re.findall('[A-Z][^A-Z]*', compound)
+            subscripts_array = ['', '']
+            for i in range(0,2):
+                subscripts_array[i] = int(re.sub("\D", "", different_elements[i]))
+                if subscripts_array[i] == '':
+                    subscripts_array[i] = 1
+            cation_charge = abs(int(Element.get(split_compound[1], '')[7]))
+            anion_charge = int((cation_charge*subscripts_array[1])/subscripts_array[0])
+            roman_translation = roman.toRoman(anion_charge)
+            compound_name = anion + ' (' + roman_translation + ') ' + cation_ide
+            return compound_name
+
+    if polyatomic:
+        component_one = compound.split(')')[0]
+        if(compound[0] == '('):
+            anion = 'Ammonium'
+            component_two = compound.split(')')[1]
+            component_two = re.sub(r"[^A-Za-z]+", '', component_two)
+            cation = Element.get(component_two, '')[2]
+            cation_ide = cation + 'ide'
+            return anion + ' ' + cation_ide
+        else:
+            component_two = compound.split('(')[0]
+            anion_symbol = re.sub(r"[^A-Za-z]+", '', component_two)
+            anion = Element.get(anion_symbol, '')
+            anion_name = anion[1]
+            anion_multivalence = anion[6]
+            component_one = component_one.split('(')[1]
+            polyatomic_ion = polyatomic_formula.get(component_one, '')
+            cation = polyatomic_ion
+            if anion_multivalence:
+                cation_charge = polyatomic_ions.get(cation, '')[1]
+                if compound[-1] == ')':
+                    cation_subscript = 1
+                else:
+                    cation_subscript = compound.split(')')[1]
+                    cation_subscript = int(re.sub("\D", "", cation_subscript))
+                anion_subscript = int(re.sub("\D", "", component_two))
+                anion_charge = abs(int((cation_charge * cation_subscript) / anion_subscript))
+                roman_translation = roman.toRoman(anion_charge)
+                compound_name = anion_name + ' (' + roman_translation + ') ' + cation
+                return compound_name
+            else:
+                return anion_name + ' ' + cation
 
 
+def covalent():
+    problemkey = str(input('Is the problem either covalent [N]aming or writing the [F]ormulas?')).upper()
+    if problemkey == 'N':
+        covalent_naming()
+    if problemkey == 'F':
+        covalent_compound()
 
+def covalent_naming():
 
-ionic()
-
+def covalent_compound():
+'''
 def main():
     print("Booted up")
     print("What seems to be the problem today?")
     problemkey = str(input("Press the key for the problem you have: \n A: Acids and Bases/pH \n C: Covalent Bonds \n  E: Equation \n I: Ionic Charge \n R: Reaction \n U: Unknown")).upper()
-    if(problemkey=='A'):
-        pH()
+    if problemkey == 'A':
+        #pH()
     if(problemkey=='C'):
-        covalent()
+        #covalent()
     if(problemkey=='E'):
-        equation()
+        #equation()
     if(problemkey=='I'):
         ionic()
     if(problemkey=='R'):
@@ -354,3 +433,4 @@ def main():
     if(problemkey=='U'):
         problemtype()
 
+'''
