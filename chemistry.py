@@ -234,7 +234,9 @@ polyatomic_formula = {
     "CrO4": "chromate"
 }
 
-prefixes = ['mono','di','tri','tetra','penta','hexa','hepta','octa']
+prefixes = ['mono', 'di', 'tri', 'tetra', 'penta', 'hexa', 'hepta', 'octa']
+
+prefixes_shortened = ['mon', 'di', 'tri', 'tetr', 'pent', 'hex', 'hept', 'oct']
 
 def lcm(x, y):
     if x > y:
@@ -273,32 +275,30 @@ def ionic_compound():
     cation_ide = individual_compounds[1]
     cation = cation_ide[:-3]
     polyatomic = False
-        ammonium_anion = polyatomic_ions.get(anion, False)
-        polyatomic_cation = polyatomic_ions.get(cation_ide, False)
-        if ammonium_anion or polyatomic_cation:
-            polyatomic = True
-        if ammonium_anion:
-            anion_symbol = polyatomic_ions.get(anion, '')[0]
-            anion_multivalence = False
-            if not polyatomic_cation:
-                cation_symbol = Element_names.get(cation, '')
-        if polyatomic_cation:
-            if not ammonium_anion:
-                anion_symbol = Element_names.get(anion, '')
-                anion_multivalence = Element.get(anion_symbol, '')
-                anion_multivalence = anion_multivalence[6]
-            cation_symbol = polyatomic_ions.get(cation_ide, '')[0]
-    except:
-        if not polyatomic:
-            anion_symbol = Element_names.get(anion, '')
+    ammonium_anion = polyatomic_ions.get(anion, False)
+    polyatomic_cation = polyatomic_ions.get(cation_ide, False)
+    if ammonium_anion or polyatomic_cation:
+        polyatomic = True
+    if ammonium_anion:
+        anion_symbol = polyatomic_ions.get(anion, '')[0]
+        anion_multivalence = False
+        if not polyatomic_cation:
             cation_symbol = Element_names.get(cation, '')
+    if polyatomic_cation:
+        if not ammonium_anion:
+            anion_symbol = Element_names.get(anion, '')
             anion_multivalence = Element.get(anion_symbol, '')
             anion_multivalence = anion_multivalence[6]
+        cation_symbol = polyatomic_ions.get(cation_ide, '')[0]
+    if not polyatomic:
+        anion_symbol = Element_names.get(anion, '')
+        cation_symbol = Element_names.get(cation, '')
+        anion_multivalence = Element.get(anion_symbol, '')
+        anion_multivalence = anion_multivalence[6]
     if anion_multivalence:
         roman_numerals = str(input('What is the roman numeral attached to the anion? \n'))
         anion_charge = roman.fromRoman(roman_numerals)
         if polyatomic:
-            print(cation_symbol)
             cation_charge = abs(polyatomic_ions.get(cation_ide, '')[1])
         else:
             cation_charge = abs(Element.get(cation_symbol,'')[7])
@@ -397,8 +397,16 @@ def ionic_naming():
                     cation_subscript = 1
                 else:
                     cation_subscript = compound.split(')')[1]
-                    cation_subscript = int(re.sub("\D", "", cation_subscript))
-                anion_subscript = int(re.sub("\D", "", component_two))
+                    cation_subscript = re.sub("\D", "", cation_subscript)
+                    if not cation_subscript == '':
+                        cation_subscript = int(cation_subscript)
+                    else:
+                        cation_subscript = 1
+                anion_subscript = re.sub("\D", "", component_two)
+                if not anion_subscript == '':
+                    anion_subscript = int(anion_subscript)
+                else:
+                    anion_subscript = 1
                 anion_charge = abs(int((cation_charge * cation_subscript) / anion_subscript))
                 roman_translation = roman.toRoman(anion_charge)
                 compound_name = anion_name + ' (' + roman_translation + ') ' + cation
@@ -415,50 +423,12 @@ def covalent():
         print(covalent_compound())
 
 
-def covalent_naming():
-    chemical_name = str(input('What is the name of the covalent compound? \n'))
-    first_element = chemical_name.split()[0].lower()
-    second_element = chemical_name.split()[1].lower()
-    try:
-        first_element_occurrences = int([(x) for x in range(len(prefixes)) if prefixes[x] in first_element][0])
-        second_element_occurrences = int([(x) for x in range(len(prefixes)) if prefixes[x] in second_element][0])
-    except:
-        first_element_occurrences = 0
-        second_element_occurrences = int([(x) for x in range(len(prefixes)) if prefixes[x] in second_element][0])
-    first_prefix = prefixes[first_element_occurrences]
-    second_prefix = prefixes[second_element_occurrences]
-    first_element_name = first_element.replace(first_prefix, '').capitalize()
-    second_element_name = second_element.replace(second_prefix, '')[:-3]
-    first_element_symbol = Element_names.get(first_element_name, '')
-    second_element_symbol = Element_names.get(second_element_name, '')
-    if first_element_occurrences == 0:
-        if second_element_occurrences == 0:
-            compound = str(first_element_symbol) + str(second_element_symbol)
-        else:
-            compound = str(first_element_symbol) + str(second_element_symbol) + str(second_element_occurrences + 1)
-    else:
-        if second_element_occurrences == 0:
-            compound = str(first_element_symbol) + str(first_element_occurrences + 1) + str(second_element_symbol)
-        else:
-            compound = str(first_element_symbol) + str(first_element_occurrences + 1) + str(second_element_symbol) \
-                       + str(second_element_occurrences + 1)
-    return compound.replace('0','\u2080').replace('1','\u2081').replace('2','\u2082').replace('3','\u2083').replace('4','\u2084').replace('5','\u2085').replace('6','\u2086').replace('7','\u2087').replace('8','\u2088').replace('9','\u2089')
-
-
 def covalent_compound():
-    compound = str(input('What is the name of the compound? \n'))
-    chemical = compound.split()
-    chemicals = ['','']
-    split_compound = ['','']
-    chemicals[0] = re.sub(r"[^A-Za-z]+", '', chemical[0])
-    chemicals[1] = re.sub(r"[^A-Za-z]+", '', chemical[1])
-    split_compound[0] = re.findall('[A-Z][^A-Z]*', chemicals[0])
-    split_compound[1] = re.findall('[A-Z][^A-Z]*', chemicals[1])
-    print(split_compound)
-    first_element = split_compound[0]
-    second_element = split_compound[1]
-    first_element_name = Element.get(first_element, '')[1]
-    second_element_name = Element.get(second_element, '')[1].lower()
+    compound = str(input('What is the formula of the compound? \n'))
+    chemicals = re.sub(r"[^A-Za-z]+", '', compound)
+    split_compound = re.findall("[A-Z][^A-Z]*", chemicals)
+    first_element_name = Element.get(split_compound[0], '')[1]
+    second_element_name = Element.get(split_compound[1], '')[2].lower()
     different_elements = re.findall('[A-Z][^A-Z]*', compound)
     subscripts_array = ['', '']
     for i in range(0, 2):
@@ -467,17 +437,75 @@ def covalent_compound():
             subscripts_array[i] = 1
         else:
             subscripts_array[i] = int(subscripts_array[i])
-    first_element_subscript = prefixes[int(subscripts_array[0])-1]
-    second_element_subscript = prefixes[int(subscripts_array[1])-1]
+    if first_element_name[0].lower() in "aeiou":
+        first_element_subscript = prefixes_shortened[int(subscripts_array[0])-1]
+    else:
+        first_element_subscript = prefixes[int(subscripts_array[0])-1]
+    if second_element_name[0].lower() in "aeiou":
+        second_element_subscript = prefixes_shortened[int(subscripts_array[1])-1]
+    else:
+        second_element_subscript = prefixes[int(subscripts_array[1])-1]
     if(subscripts_array[0] == 1):
         compound_name = first_element_name + ' ' + second_element_subscript + second_element_name
     else:
-        compound_name = first_element_subscript.capitalize() + (first_element_name.lower()) + ' ' + second_element_subscript + second_element_name
+        compound_name = first_element_subscript.capitalize() + (first_element_name.lower()) + ' ' + second_element_subscript + second_element_name + 'ide'
     return compound_name
 
-#def equation():
 
-ionic()
+def covalent_naming():
+    compound = str(input('What is the name of the compound? \n'))
+    chemical = compound.split()
+    chemical_1_full = chemical[0].lower()
+    chemical_1_short = chemical[0].lower()
+    chemical_2_full = chemical[1].lower()
+    chemical_2_short = chemical[1].lower()
+    element_1_subscript = 1
+    element_2_subscript = 1
+    for j in range(len(prefixes)):
+        i = prefixes[j]
+        prefix_length = len(i)
+        if i in chemical_1_full[0:prefix_length]:
+            chemical_1_full = chemical_1_full[prefix_length:]
+            element_1_subscript = j+1
+        if i in chemical_2_full[0:prefix_length]:
+            chemical_2_full = chemical_2_full[prefix_length:]
+            element_2_subscript = j+1
+    for j in range(len(prefixes_shortened)):
+        i = prefixes_shortened[j]
+        prefix_length = len(i)
+        if i in chemical_1_short[0:prefix_length]:
+            chemical_1_short = chemical_1_short[prefix_length:]
+            element_1_subscript = j+1
+        if i in chemical_2_short[0:prefix_length]:
+            chemical_2_short = chemical_2_short[prefix_length:]
+            element_2_subscript = j+1
+    second_element_name = chemical_2_full[:-3]
+    second_element_name_short = chemical_2_short[:-3]
+    first_element_name = Element_names.get(chemical_1_full.capitalize(), '')
+    second_element_name = Element_names.get(second_element_name, '')
+    first_element_name_short = Element_names.get(chemical_1_short.capitalize(), '')
+    second_element_name_short = Element_names.get(second_element_name_short, '')
+    if not first_element_name == '':
+        first_element = first_element_name
+    else:
+        first_element = first_element_name_short
+
+    if not second_element_name == '':
+        second_element = second_element_name
+    else:
+        second_element = second_element_name_short
+    if element_1_subscript == 1:
+        if element_2_subscript ==1:
+            compound_formula = first_element + second_element + str(element_2_subscript)
+        else:
+            compound_formula = first_element + second_element
+    else:
+        if element_2_subscript==1:
+            compound_formula = first_element + str(element_1_subscript) + second_element
+        else:
+            compound_formula = first_element + str(element_1_subscript) + second_element + str(element_2_subscript)
+    return compound_formula.replace('0','\u2080').replace('1','\u2081').replace('2','\u2082').replace('3','\u2083').replace('4','\u2084').replace('5','\u2085').replace('6','\u2086').replace('7','\u2087').replace('8','\u2088').replace('9','\u2089')
+
 
 '''
 def pH():
