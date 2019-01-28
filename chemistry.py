@@ -267,45 +267,45 @@ def ionic():
 
 
 def ionic_compound():
-    compound_name=str(input('What is the name of the compound without any roman numerals?\n'))
-    individual_compounds=str.split(compound_name)
-    anion=individual_compounds[0]
-    cation_ide=individual_compounds[1]
-    cation=cation_ide[:-3]
-    polyatomic=False
-    try:
-        ammonium_anion=polyatomic_ions.get(anion,'')
-        polyatomic_cation=polyatomic_ions.get(cation_ide,'')
-        if ammonium_anion or polyatomic_cation :
-            polyatomic=True
+    compound_name = str(input('What is the name of the compound without any roman numerals?\n'))
+    individual_compounds = str.split(compound_name)
+    anion = individual_compounds[0]
+    cation_ide = individual_compounds[1]
+    cation = cation_ide[:-3]
+    polyatomic = False
+        ammonium_anion = polyatomic_ions.get(anion, False)
+        polyatomic_cation = polyatomic_ions.get(cation_ide, False)
+        if ammonium_anion or polyatomic_cation:
+            polyatomic = True
         if ammonium_anion:
-            anion_symbol=polyatomic_ions.get(anion,'')[0]
-            anion_multivalence=False
+            anion_symbol = polyatomic_ions.get(anion, '')[0]
+            anion_multivalence = False
             if not polyatomic_cation:
-                cation_symbol=Element_names.get(cation,'')
+                cation_symbol = Element_names.get(cation, '')
         if polyatomic_cation:
             if not ammonium_anion:
-                anion_symbol=Element_names.get(anion,'')
-                anion_multivalence=Element.get(anion_symbol,'')
-                anion_multivalence=anion_multivalence[6]
-            cation_symbol=polyatomic_ions.get(cation_ide,'')[0]
+                anion_symbol = Element_names.get(anion, '')
+                anion_multivalence = Element.get(anion_symbol, '')
+                anion_multivalence = anion_multivalence[6]
+            cation_symbol = polyatomic_ions.get(cation_ide, '')[0]
     except:
         if not polyatomic:
-            anion_symbol=Element_names.get(anion,'')
-            cation_symbol=Element_names.get(cation,'')
-            anion_multivalence=Element.get(anion_symbol,'')
-            anion_multivalence=anion_multivalence[6]
+            anion_symbol = Element_names.get(anion, '')
+            cation_symbol = Element_names.get(cation, '')
+            anion_multivalence = Element.get(anion_symbol, '')
+            anion_multivalence = anion_multivalence[6]
     if anion_multivalence:
-        roman_numerals=str(input('What is the roman numeral attached to the anion? \n'))
-        anion_charge=roman.fromRoman(roman_numerals)
+        roman_numerals = str(input('What is the roman numeral attached to the anion? \n'))
+        anion_charge = roman.fromRoman(roman_numerals)
         if polyatomic:
-            cation_charge=abs(polyatomic_ions.get(cation_symbol,'')[0])
+            print(cation_symbol)
+            cation_charge = abs(polyatomic_ions.get(cation_ide, '')[1])
         else:
-            cation_charge=abs(Element.get(cation_symbol,'')[7])
-        atoms_needed=lcm(anion_charge,cation_charge)
-        atoms_needed=[str(atoms_needed[0]),str(atoms_needed[1])]
+            cation_charge = abs(Element.get(cation_symbol,'')[7])
+        atoms_needed = lcm(anion_charge,cation_charge)
+        atoms_needed = [str(atoms_needed[0]),str(atoms_needed[1])]
         if polyatomic:
-            chemical_fomrula=str(anion_symbol)+atoms_needed[0]+'('+str(cation_symbol)+')'+atoms_needed[1]
+            chemical_formula=str(anion_symbol)+atoms_needed[0]+'('+str(cation_symbol)+')'+atoms_needed[1]
         else:
             chemical_formula=str(anion_symbol)+atoms_needed[0]+str(cation_symbol)+atoms_needed[1]
         #Changing Subscripts Format
@@ -360,11 +360,13 @@ def ionic_naming():
             return compound_name
         else:
             different_elements = re.findall('[A-Z][^A-Z]*', compound)
-            subscripts_array = ['', '']
+            subscripts_array = [0, 1]
             for i in range(0,2):
-                subscripts_array[i] = int(re.sub("\D", "", different_elements[i]))
+                subscripts_array[i] = re.sub("\D", '', different_elements[i])
                 if subscripts_array[i] == '':
                     subscripts_array[i] = 1
+                else:
+                    subscripts_array[i] = int(subscripts_array[i])
             cation_charge = abs(int(Element.get(split_compound[1], '')[7]))
             anion_charge = int((cation_charge*subscripts_array[1])/subscripts_array[0])
             roman_translation = roman.toRoman(anion_charge)
@@ -412,6 +414,7 @@ def covalent():
     if problemkey == 'F':
         print(covalent_compound())
 
+
 def covalent_naming():
     chemical_name = str(input('What is the name of the covalent compound? \n'))
     first_element = chemical_name.split()[0].lower()
@@ -444,8 +447,14 @@ def covalent_naming():
 
 def covalent_compound():
     compound = str(input('What is the name of the compound? \n'))
-    chemicals = re.sub(r"[^A-Za-z]+", '', compound)
-    split_compound = re.findall('[A-Z][^A-Z]*', chemicals)
+    chemical = compound.split()
+    chemicals = ['','']
+    split_compound = ['','']
+    chemicals[0] = re.sub(r"[^A-Za-z]+", '', chemical[0])
+    chemicals[1] = re.sub(r"[^A-Za-z]+", '', chemical[1])
+    split_compound[0] = re.findall('[A-Z][^A-Z]*', chemicals[0])
+    split_compound[1] = re.findall('[A-Z][^A-Z]*', chemicals[1])
+    print(split_compound)
     first_element = split_compound[0]
     second_element = split_compound[1]
     first_element_name = Element.get(first_element, '')[1]
@@ -465,8 +474,34 @@ def covalent_compound():
     else:
         compound_name = first_element_subscript.capitalize() + (first_element_name.lower()) + ' ' + second_element_subscript + second_element_name
     return compound_name
-covalent()
+
+#def equation():
+
+ionic()
+
 '''
+def pH():
+    compound = str(input('[N]aming or [F]ormula?')).upper()
+    if compound == 'F':
+        pH_formula()
+    if compound == 'N':
+        ph_naming()
+
+def pH_formula():
+    compound_naming = str(input('What is the compound name?'))
+    base = False
+    acid = False
+    if 'OH' in compound_naming:
+        base = True
+    else:
+        acid = True
+    if acid:
+        
+
+
+def pH_naming():
+
+
 def main():
     print("Booted up")
     print("What seems to be the problem today?")
