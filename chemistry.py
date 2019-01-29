@@ -507,39 +507,121 @@ def covalent_naming():
     return compound_formula.replace('0','\u2080').replace('1','\u2081').replace('2','\u2082').replace('3','\u2083').replace('4','\u2084').replace('5','\u2085').replace('6','\u2086').replace('7','\u2087').replace('8','\u2088').replace('9','\u2089')
 
 
-'''
+
 def pH():
-    compound = str(input('[N]aming or [F]ormula?')).upper()
+    compound = str(input('[N]aming or [F]ormula? \n')).upper()
     if compound == 'F':
         pH_formula()
     if compound == 'N':
         ph_naming()
 
 def pH_formula():
-    compound_naming = str(input('What is the compound name?'))
+    compound_naming = str(input('What is the compound name? \n'))
     base = False
     acid = False
+    binary = False
+    oxyacid = False
     if 'OH' in compound_naming:
         base = True
     else:
         acid = True
     if acid:
-        
+        if 'O' in compound_naming:
+            oxyacid = True
+        else:
+            binary = True
+    if binary:
+        acid = re.sub(r"[^A-Za-z]+", '', compound_naming)
+        acid.replace('(', '').replace(')', '')
+        acid = re.sub(r"H", '', acid)
+        polyatomic_ion = polyatomic_formula.get(acid, '')
+        element = Element.get(acid, '')[2]
+        cation = ''
+        if polyatomic_ion == '':
+            cation = element
+        else:
+            cation = polyatomic_ion
+        if cation[-3:] == 'ide':
+            compound_name = 'Hydro' + cation[:-3] + 'ic acid'
+        else:
+            compound_name = 'Hydro' + cation + 'ic acid'
+    if oxyacid:
+        try:
+            acid = compound_naming.split('(')[1]
+            acid = acid.split(')')[0]
+        except:
+            acid = compound_naming[1:]
+            while acid[0].isdigit():
+                acid = acid[1:]
+        polyatomic_ion = polyatomic_formula.get(acid, '')
+        if polyatomic_ion[-3:] == 'ate':
+            polyatomic_ion = polyatomic_ion[:-3] + 'ic'
+        elif polyatomic_ion[-3:] == 'ite':
+            polyatomic_ion = polyatomic_ion[:-3] + 'ous'
+        compound_name = polyatomic_ion.capitalize() + ' acid'
+    if base:
+        base = re.sub(r"[^A-Za-z]+", '', compound_naming)
+        base.replace('(', '').replace(')', '')
+        base = re.sub(r"OH", '', base)
+        base_name = Element.get(base, '')[1]
+        compound_name = base_name + ' hydroxide'
+    return compound_name
 
 
 def pH_naming():
+    compound_name = str(input('What is the name of the compound? If multivalent do not add the roman numerals\n'))
+    acid = False
+    if compound_name[-4:] == 'acid':
+        acid = True
+    element_name = compound_name.split()[0]
+    if acid:
+        if element_name[:5] == 'Hydro':
+            element_name = element_name[5:-2]
+            element = Element_names.get(element_name, '')
+            element_charge = abs(Element.get(element, '')[7])
+            if element_charge == 1:
+                compound_formula = 'H' + element
+            else:
+                compound_formula = 'H' + element
+            return compound_formula
+        else:
+            if element_name[-2:] == 'ic':
+                element_name = element_name[:-2].lower() + 'ate'
+            else:
+                element_name = element_name[:-3].lower() + 'ite'
+            polyatomic_ion_info = polyatomic_ions.get(element_name, '')
+            polyatomic_ion_formula = polyatomic_ion_info[0]
+            polyatomic_ion_charge = abs(polyatomic_ion_info[1])
+            if polyatomic_ion_charge == 1:
+                compound_formula = 'H' + polyatomic_ion_formula
+            else:
+                compound_formula = 'H' + str(polyatomic_ion_charge) + polyatomic_ion_formula
 
+    else:
+        base_name = compound_name.split()[0]
+        roman_numerals = str(input('If there ar roman numerals put them here or else put n \n')).upper()
+        Element_name = Element_names.get(base_name, '')
+        if roman_numerals == 'N':
+            Element_charge = Element.get(Element_name, '')[7]
+        else:
+            Element_charge = roman.fromRoman(roman_numerals)
+        if Element_charge == 1:
+            compound_formula = Element_name + 'OH'
+        else:
+            compound_formula = Element_name + '(OH)' + str(Element_charge)
+
+    return compound_formula.replace('0', '\u2080').replace('1', '\u2081').replace('2', '\u2082').replace('3', '\u2083').replace('4', '\u2084').replace('5', '\u2085').replace('6', '\u2086').replace('7', '\u2087').replace('8', '\u2088').replace('9', '\u2089')
 
 def main():
     print("Booted up")
     print("What seems to be the problem today?")
-    problemkey = str(input("Press the key for the problem you have: \n A: Acids and Bases/pH \n C: Covalent Bonds \n  E: Equation \n I: Ionic Charge \n R: Reaction \n U: Unknown")).upper()
+    problemkey = str(input("Press the key for the problem you have: \n [A]cids and Bases/pH \n [C]ovalent Bonds \n [E]quation \n [I]onic Charge \n [R]eaction \n [U]nknown \n")).upper()
     if problemkey == 'A':
-        #pH()
+        pH()
     if(problemkey=='C'):
-        #covalent()
+        covalent()
     if(problemkey=='E'):
-        #equation()
+        equation()
     if(problemkey=='I'):
         ionic()
     if(problemkey=='R'):
@@ -547,4 +629,4 @@ def main():
     if(problemkey=='U'):
         problemtype()
 
-'''
+print(pH_naming())
