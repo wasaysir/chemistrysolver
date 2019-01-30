@@ -603,6 +603,7 @@ def pH_naming():
         Element_name = Element_names.get(base_name, '')
         if roman_numerals == 'N':
             Element_charge = Element.get(Element_name, '')[7]
+            Element_charge = Element.get(Element_name, '')[7]
         else:
             Element_charge = roman.fromRoman(roman_numerals)
         if Element_charge == 1:
