@@ -599,7 +599,7 @@ def pH_naming():
 
     else:
         base_name = compound_name.split()[0]
-        roman_numerals = str(input('If there ar roman numerals put them here or else put n \n')).upper()
+        roman_numerals = str(input('If there are roman numerals put them here or else put n \n')).upper()
         Element_name = Element_names.get(base_name, '')
         if roman_numerals == 'N':
             Element_charge = Element.get(Element_name, '')[7]
@@ -613,21 +613,45 @@ def pH_naming():
 
     return compound_formula.replace('0', '\u2080').replace('1', '\u2081').replace('2', '\u2082').replace('3', '\u2083').replace('4', '\u2084').replace('5', '\u2085').replace('6', '\u2086').replace('7', '\u2087').replace('8', '\u2088').replace('9', '\u2089')
 
+def lewis_dot_diagram():
+    print('Is it an [E]lement or [C]ompound? \n', end = "\r")
+    print('Is the chemical in [W]ords or [S]ymbols? \n', end="\r")
+    chemical_type = str(input())
+    print('Is the chemical in [W]ords or [S]ymbols? \n', end = "\r")
+    format_chemical = str(input())
+    print('What is the chemical in the proper format? \n', end = "\r")
+    chemical_name = str(input())
+    if chemical_type == 'E':
+        if format_chemical == 'S':
+            print('oran')
+
+
+def equation():
+    print('oranges')
+
+def reaction():
+    print('orange')
+
+def problemtype():
+    print('orangutan')
+
 def main():
     print("Booted up")
     print("What seems to be the problem today?")
-    problemkey = str(input("Press the key for the problem you have: \n [A]cids and Bases/pH \n [C]ovalent Bonds \n [E]quation \n [I]onic Charge \n [R]eaction \n [U]nknown \n")).upper()
+    problemkey = str(input("Press the key for the problem you have: \n [A]cids and Bases/pH \n [C]ovalent Bonds \n [E]quation \n [I]onic Charge \n [L]ewis Dot Diagrams \n [R]eaction \n [U]nknown \n")).upper()
     if problemkey == 'A':
         pH()
-    if(problemkey=='C'):
+    if problemkey == 'C':
         covalent()
-    if(problemkey=='E'):
+    if problemkey == 'E':
         equation()
-    if(problemkey=='I'):
+    if problemkey == 'I':
         ionic()
-    if(problemkey=='R'):
+    if problemkey == 'L':
+        lewis_dot_diagram()
+    if problemkey == 'R':
         reaction()
-    if(problemkey=='U'):
+    if problemkey == 'U':
         problemtype()
 
-print(pH_naming())
+print(main())
