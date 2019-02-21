@@ -196,7 +196,6 @@ polyatomic_ions = {
     'hydroxide': ['OH', -1],
     'nitrite': ['NO2', -1],
     'nitrate': ['NO3', -1],
-    'chlorate': ['ClO3', -1],
     'cyanide': ['CN', -1],
     'carbonate': ['CO3', -2],
     'sulfite': ['SO3', -2],
@@ -238,24 +237,24 @@ prefixes = ['mono', 'di', 'tri', 'tetra', 'penta', 'hexa', 'hepta', 'octa']
 
 prefixes_shortened = ['mon', 'di', 'tri', 'tetr', 'pent', 'hex', 'hept', 'oct']
 
+
 def lcm(x, y):
     if x > y:
         z = x
     else:
         z = y
-
-    while(True):
-        if((z % x == 0) and (z % y == 0)):
+    while True:
+        if z % x == 0 and z % y == 0:
             lcm = z
             break
         z += 1
-    if(lcm/x==1):
-        if(lcm/y==1):
-            return('','')
-        return('',int(lcm/y))
-    if(lcm/y==1):
-        return(int(lcm/x),'')
-    return(int(lcm/x),int(lcm/y))
+    if lcm/x == 1:
+        if lcm/y == 1:
+            return '', ''
+        return '', int(lcm/y)
+    if lcm/y == 1:
+        return int(lcm/x), ''
+    return int(lcm/x), int(lcm/y)
 
 
 def ionic():
@@ -425,7 +424,9 @@ def covalent():
 
 def covalent_compound():
     compound = str(input('What is the formula of the compound? \n'))
+    #Removing numbers
     chemicals = re.sub(r"[^A-Za-z]+", '', compound)
+    #Splitting at Capitals
     split_compound = re.findall("[A-Z][^A-Z]*", chemicals)
     first_element_name = Element.get(split_compound[0], '')[1]
     second_element_name = Element.get(split_compound[1], '')[2].lower()
@@ -513,7 +514,7 @@ def pH():
     if compound == 'F':
         pH_formula()
     if compound == 'N':
-        ph_naming()
+        pH_naming()
 
 def pH_formula():
     compound_naming = str(input('What is the compound name? \n'))
@@ -613,27 +614,78 @@ def pH_naming():
 
     return compound_formula.replace('0', '\u2080').replace('1', '\u2081').replace('2', '\u2082').replace('3', '\u2083').replace('4', '\u2084').replace('5', '\u2085').replace('6', '\u2086').replace('7', '\u2087').replace('8', '\u2088').replace('9', '\u2089')
 
+lewis_dot_patterns = [
+    ['\u2800', '\u2800', '\u2800', '\u2800'],
+    ['\u2804', '\u2800', '\u2800', '\u2800'],
+    ['\u2804', '\u2801', '\u2800', '\u2800'],
+    ['\u2804', '\u2801', '\u2801', '\u2800'],
+    ['\u2804', '\u2801', '\u2801', '\u2808'],
+    ['\u2824', '\u2801', '\u2801', '\u2808'],
+    ['\u2824', '\u2803', '\u2801', '\u2808'],
+    ['\u2824', '\u2803', '\u2809', '\u2808'],
+    ['\u2824', '\u2803', '\u2809', '\u2818']
+]
+
+
 def lewis_dot_diagram():
-    print('Is it an [E]lement or [C]ompound? \n', end = "\r")
-    print('Is the chemical in [W]ords or [S]ymbols? \n', end="\r")
-    chemical_type = str(input())
-    print('Is the chemical in [W]ords or [S]ymbols? \n', end = "\r")
-    format_chemical = str(input())
-    print('What is the chemical in the proper format? \n', end = "\r")
-    chemical_name = str(input())
+    chemical_type = str(input('Is it an [E]lement or [C]ompound? \n')).upper()
+    format_chemical = str(input('Is the chemical in [W]ords or [S]ymbols? \n')).upper()
+    chemical_name = str(input('What is the chemical in the format you specified? \n'))
+    lewis_dot_location = 0
     if chemical_type == 'E':
         if format_chemical == 'S':
-            print('oran')
+            chemical_symbol = chemical_name
+        else:
+            chemical_symbol = Element_names.get(chemical_name, '')
+        chemical_charge = Element.get(chemical_symbol, '')[7]
+        if chemical_charge < 0:
+            lewis_dot_location = 8 + chemical_charge
+        elif chemical_charge == 0:
+            lewis_dot_location = 8
+        else:
+            lewis_dot_location = chemical_charge
+        braille_signals = lewis_dot_patterns[lewis_dot_location]
+        ld = ('\u2800' + braille_signals[0] + '\u2800\n' + braille_signals[3] + chemical_symbol + braille_signals[1] +
+              '\n' + '\u2800' + braille_signals[2] + '\u2800')
+        print(ld)
+    else:
+        if format_chemical == 'S':
+            chemicals = re.sub(r"[^A-Za-z]+", '', compound)
+            # Splitting at Capitals
+            split_compound = re.findall("[A-Z][^A-Z]*", chemicals)
+            first_element_name = Element.get(split_compound[0], '')[1]
+            second_element_name = Element.get(split_compound[1], '')[2].lower()
+            different_elements = re.findall('[A-Z][^A-Z]*', compound)
+            subscripts_array = ['', '']
+            for i in range(0, 2):
+                subscripts_array[i] = re.sub("\D", "", different_elements[i])
+                if subscripts_array[i] == '':
+                    subscripts_array[i] = 1
+                else:
+                    subscripts_array[i] = int(subscripts_array[i])
+            first_element_charge = Element.get(split_compound[0], '')[7]
+            second_element_charge = Element.get(split_compound[1], '')[7]
+            if first_element_charge < 0:
+                first_lewis_dot_location = 8
+            else:
+                first_lewis_dot_location = 0
+            if second_element_charge < 0:
+                second_lewis_dot_location = 8
+            else:
+                second_lewis_dot_location = 0
 
 
 def equation():
     print('oranges')
 
+
 def reaction():
     print('orange')
 
+
 def problemtype():
     print('orangutan')
+
 
 def main():
     print("Booted up")
@@ -654,4 +706,5 @@ def main():
     if problemkey == 'U':
         problemtype()
 
-print(main())
+
+lewis_dot_diagram()
